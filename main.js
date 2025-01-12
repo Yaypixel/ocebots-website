@@ -10,12 +10,23 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 camera.position.setZ(30)
 
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize(){
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
 renderer.render(scene, camera)
 
 
 const vector = new THREE.Vector3()
 
-const tourus = new THREE.Mesh(new THREE.TorusGeometry(5,2,16,100), new THREE.MeshStandardMaterial({color: 0xFF6347}))
+
 
 const pointLight = new THREE.PointLight(0xffffff)
 
@@ -56,15 +67,31 @@ const test = new THREE.Mesh(
 
 let testBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
 testBB.setFromObject(test)
-console.log(testBB)
+
+const SandTexture = new THREE.TextureLoader().load('Assets/sand.jpeg')
+
+SandTexture.wrapS = THREE.RepeatWrapping
+SandTexture.wrapT = THREE.RepeatWrapping
+SandTexture.repeat.set(10,10)
+
+const sand = new THREE.Mesh(
+  new THREE.BoxGeometry(500,1,500),
+  new THREE.MeshStandardMaterial({map: SandTexture})
+)
+
+let sandBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
+sandBB.setFromObject(sand)
 
 let hasIntersectedBefore = false
 
 function checkCollision() {
-  if (playerBB.intersectsBox(testBB) && hasIntersectedBefore === true){
+  if (playerBB.intersectsBox(testBB) && hasIntersectedBefore){
     getOut()
+  } 
+  else if (playerBB.intersectsBox(sandBB) && hasIntersectedBefore) {
+    camera.position.y = .8
   } else {
-    hasIntersectedBefore = true
+      hasIntersectedBefore = true
   }
 }
 
@@ -113,16 +140,7 @@ addFish()
 Array(200).fill().forEach(addSeaweed)
 
 
-const SandTexture = new THREE.TextureLoader().load('Assets/sand.jpeg')
 
-SandTexture.wrapS = THREE.RepeatWrapping
-SandTexture.wrapT = THREE.RepeatWrapping
-SandTexture.repeat.set(10,10)
-
-const sand = new THREE.Mesh(
-  new THREE.BoxGeometry(500,1,500),
-  new THREE.MeshStandardMaterial({map: SandTexture})
-)
 
 const OcebotsTexture = new THREE.TextureLoader().load('Assets/ocebot.png')
 
