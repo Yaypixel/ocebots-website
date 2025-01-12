@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { FirstPersonControls } from 'three/examples/jsm/Addons.js';
+import { FirstPersonControls, GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 
 const scene = new THREE.Scene();
@@ -41,6 +41,26 @@ const test = new THREE.Mesh(
   new THREE.BoxGeometry(30,15,2),
   new THREE.MeshStandardMaterial( {color: 0xffffff} )
 )
+
+const loader = new GLTFLoader()
+
+function addSeaweed() {
+  loader.load( 'Assets/seaweed.glb', function ( gltf ) {
+    const model = gltf.scene
+    model.scale.set(5,5,5)
+    const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(500));
+    model.position.set(x, -2, y)
+    scene.add( model )
+    
+
+  }, undefined, function ( error ) {
+
+    console.error( error )
+
+  } );
+}
+Array(200).fill().forEach(addSeaweed)
+
 
 const SandTexture = new THREE.TextureLoader().load('Assets/sand.jpeg')
 
@@ -95,7 +115,7 @@ function animate() {
     // Animation loop
       requestAnimationFrame(animate);
 
-      
+
       controls.update(0.1);  
 
       
