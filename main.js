@@ -68,7 +68,7 @@ const test = new THREE.Mesh(
 let testBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
 testBB.setFromObject(test)
 
-const SandTexture = new THREE.TextureLoader().load('Assets/sand.jpeg')
+const SandTexture = new THREE.TextureLoader().load('/sand.jpeg')
 
 SandTexture.wrapS = THREE.RepeatWrapping
 SandTexture.wrapT = THREE.RepeatWrapping
@@ -102,7 +102,7 @@ function getOut() {
 const loader = new GLTFLoader()
 
 function addSeaweed() {
-  loader.load( 'Assets/seaweed.glb', function ( gltf ) {
+  loader.load( '/seaweed.glb', function ( gltf ) {
     const model = gltf.scene
     model.scale.set(5,5,5)
     const [x, z] = Array(2).fill().map(() => THREE.MathUtils.randFloatSpread(500));
@@ -119,7 +119,7 @@ function addSeaweed() {
 
 
 function addFish() {
-  loader.load( 'Assets/fish.glb', function ( gltf ) {
+  loader.load( '/fish.glb', function ( gltf ) {
     const model = gltf.scene
     model.scale.set(0.5,0.5,0.5)
     const [x, y] = Array(2).fill.map(() => THREE.MathUtils.randFloatSpread(100))
@@ -142,14 +142,14 @@ Array(200).fill().forEach(addSeaweed)
 
 
 
-const OcebotsTexture = new THREE.TextureLoader().load('Assets/ocebot.png')
+const OcebotsTexture = new THREE.TextureLoader().load('/ocebot.png')
 
 const ocebots = new THREE.Mesh(
   new THREE.PlaneGeometry(10, 10),
   new THREE.MeshStandardMaterial({map: OcebotsTexture, side: THREE.DoubleSide, transparent: true})
 )
 
-const InstructionsTexture = new THREE.TextureLoader().load('Assets/instructions.png')
+const InstructionsTexture = new THREE.TextureLoader().load('/instructions.png')
 
 const instructions = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 15),
