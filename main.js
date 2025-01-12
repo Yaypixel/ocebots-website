@@ -37,10 +37,40 @@ controls.movementSpeed = 5
 const bg = new THREE.Color().setHex(0x7fcdff)
 scene.background = bg
 
+const player = new THREE.Mesh(
+  new THREE.BoxGeometry(0.5,0.5,0.5),
+  new THREE.MeshStandardMaterial({visible: false})
+)
+
+let playerBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
+playerBB.setFromObject(player)
+
+scene.add(player)
+console.log(playerBB)
+
+
 const test = new THREE.Mesh(
   new THREE.BoxGeometry(30,15,2),
   new THREE.MeshStandardMaterial( {color: 0xffffff} )
 )
+
+let testBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
+testBB.setFromObject(test)
+console.log(testBB)
+
+let hasIntersectedBefore = false
+
+function checkCollision() {
+  if (playerBB.intersectsBox(testBB) && hasIntersectedBefore === true){
+    getOut()
+  } else {
+    hasIntersectedBefore = true
+  }
+}
+
+function getOut() {
+  window.location.replace('https://ocebots.com')
+}
 
 const loader = new GLTFLoader()
 
@@ -48,8 +78,8 @@ function addSeaweed() {
   loader.load( 'Assets/seaweed.glb', function ( gltf ) {
     const model = gltf.scene
     model.scale.set(5,5,5)
-    const [x, y, z] = Array(3).fill().map(() => THREE.MathUtils.randFloatSpread(500));
-    model.position.set(x, -2, y)
+    const [x, z] = Array(2).fill().map(() => THREE.MathUtils.randFloatSpread(500));
+    model.position.set(x, -2, z)
     scene.add( model )
     
 
@@ -57,8 +87,29 @@ function addSeaweed() {
 
     console.error( error )
 
-  } );
+  })
 }
+
+
+function addFish() {
+  loader.load( 'Assets/fish.glb', function ( gltf ) {
+    const model = gltf.scene
+    model.scale.set(0.5,0.5,0.5)
+    const [x, y] = Array(2).fill.map(() => THREE.MathUtils.randFloatSpread(100))
+    model.position.set(0, 0, 0)
+    scene.add( model )
+    
+
+  }, undefined, function ( error ) {
+
+    console.error( error )
+
+  })
+}
+
+addFish()
+
+
 Array(200).fill().forEach(addSeaweed)
 
 
@@ -110,16 +161,23 @@ camera.position.y = 3
 
 
 
-
 function animate() {
     // Animation loop
-      requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 
+  player.position.x = camera.position.x
+  player.position.y = camera.position.y
+      player.position.z = camera.position.z
+      
+  playerBB.copy(player.geometry.boundingBox).applyMatrix4(player.matrixWorld)
+ 
 
-      controls.update(0.1);  
+  checkCollision()
+
+  controls.update(0.1);  
 
       
-      renderer.render(scene, camera);
+  renderer.render(scene, camera);
 }
 
 animate();
