@@ -68,6 +68,14 @@ const test = new THREE.Mesh(
 let testBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
 testBB.setFromObject(test)
 
+const aboutUs = new THREE.Mesh(
+  new THREE.BoxGeometry(30, 15, 2),
+  new THREE.MeshStandardMaterial({color: 0xffffff})
+)
+
+scene.add(aboutUs)
+
+
 const SandTexture = new THREE.TextureLoader().load('/sand.jpeg')
 
 SandTexture.wrapS = THREE.RepeatWrapping
@@ -174,6 +182,11 @@ instructions.position.x = 5
 instructions.position.y = 4
 ocebots.position.y = 5
 
+aboutUs.position.z = -50
+aboutUs.position.y = 5
+
+
+
 
 camera.position.y = 3
 
@@ -197,5 +210,21 @@ function animate() {
       
   renderer.render(scene, camera);
 }
+
+
+
+let gridHelperOn = true
+
+window.onkeydown = function(e) {
+  if (e.keyCode === 32 && gridHelperOn) {
+    scene.remove(gridHelper)
+    gridHelperOn = false
+  } else if (keyCode === 32) {
+    scene.add(gridHelper)
+    gridHelperOn = true
+  }
+}
+
+
 
 animate();
