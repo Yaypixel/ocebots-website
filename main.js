@@ -86,6 +86,14 @@ const cad = new THREE.Mesh(
 let cadBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
 cadBB.setFromObject(cad)
 
+const code = new THREE.Mesh(
+  new THREE.BoxGeometry(30,15,2),
+  new THREE.MeshStandardMaterial({color: 0xffffff})
+)
+
+let codeBB = new THREE.Box3(new THREE.Vector3, new THREE.Vector3())
+codeBB.setFromObject(code)
+
 const SandTexture = new THREE.TextureLoader().load('/sand.jpeg')
 
 SandTexture.wrapS = THREE.RepeatWrapping
@@ -99,7 +107,6 @@ const sand = new THREE.Mesh(
 
 let sandBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
 sandBB.setFromObject(sand)
-
 
 
 let hasIntersectedBefore = false
@@ -116,6 +123,9 @@ function checkCollision() {
   }
   else if (playerBB.intersectsBox(cadBB) && hasIntersectedBefore) {
     window.location.replace("https://cad.onshape.com/documents/c01859492615b629566d2c45/w/a91257017dbf755ccfec722a")
+  }
+  else if (playerBB.intersectsBox(codeBB) && hasIntersectedBefore) {
+    window.location.replace('https://github.com/Ocebots')
   }
   else {
     hasIntersectedBefore = true
@@ -244,6 +254,18 @@ loader.load('/pirateship.glb', function(gltf) {
   console.error(error)
 })
 
+loader.load('/chest.glb', function(gltf) {
+  const chest = gltf.scene
+  chest.position.set(20, -2, -95)
+  chest.rotation.y = THREE.MathUtils.degToRad(180)
+  chest.rotation.z = THREE.MathUtils.degToRad(60)
+  chest.scale.set(2.5, 2.5, 2.5)
+
+  scene.add(chest)
+}, undefined, function (error) {
+  console.error(error)
+})
+
 
 const OcebotsTexture = new THREE.TextureLoader().load('/ocebot.png')
 
@@ -273,7 +295,14 @@ const cadText = new THREE.Mesh(
   new THREE.MeshStandardMaterial({map: CadTexture, side: THREE.DoubleSide, transparent: true})
 )
 
-scene.add(test, sand, ocebots, instructions, aboutUsText, aboutUs, cad, cadText)
+const CodeTexture = new THREE.TextureLoader().load('/code.png')
+
+const codeText = new THREE.Mesh(
+  new THREE.PlaneGeometry(30, 15),
+  new THREE.MeshStandardMaterial({map: CodeTexture, side: THREE.DoubleSide, transparent: true})
+)
+
+scene.add(test, sand, ocebots, instructions, aboutUsText, aboutUs, cad, cadText, code, codeText)
 
 
 test.rotation.z = 0.05
@@ -304,22 +333,26 @@ aboutUsText.rotation.y = 4.82
 cad.position.set(0, 5, -101.1)
 cadText.position.set(0, 5, -100)
 
+code.position.set(-50, 5, -50)
+code.rotation.y = 4.6
+codeText.position.set(-48.9, 5, -50)
+codeText.rotation.y = -4.82
 
 camera.position.y = 3
 
 
 
 function animate() {
-    // Animation loop
   requestAnimationFrame(animate);
 
   player.position.x = camera.position.x
   player.position.y = camera.position.y
-      player.position.z = camera.position.z
+  player.position.z = camera.position.z
       
   playerBB.copy(player.geometry.boundingBox).applyMatrix4(player.matrixWorld)
   aboutBB.copy(aboutUs.geometry.boundingBox).applyMatrix4(aboutUs.matrixWorld)
   cadBB.copy(cad.geometry.boundingBox).applyMatrix4(cad.matrixWorld)
+  codeBB.copy(code.geometry.boundingBox).applyMatrix4(code.matrixWorld)
 
   checkCollision()
 
