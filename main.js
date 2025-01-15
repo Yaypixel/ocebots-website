@@ -147,14 +147,13 @@ function addSeaweed() {
     model.position.set(x, -2, z)
     scene.add( model )
     
-
+    
   }, undefined, function ( error ) {
 
     console.error( error )
 
   })
 }
-
 
 
 function addBubbles() {
@@ -180,7 +179,7 @@ function addFish() {
 
     scene.add( model )
     const [x, z] = Array(2).fill().map(() => THREE.MathUtils.randFloatSpread(500));
-    const y = Array(1).fill().map(() => THREE.MathUtils.randFloatSpread(100))
+    const y = Math.floor(Math.random() * 100)
     model.position.set(x, y, z)
 
     let seconds = 0
@@ -221,7 +220,7 @@ function addFish() {
 
   })
 }
-Array(200).fill().forEach(addFish);
+Array(50).fill().forEach(addFish);
 
 function addRock() {
   loader.load( '/rock.glb', function ( gltf ) {
@@ -262,6 +261,72 @@ loader.load('/chest.glb', function(gltf) {
   chest.scale.set(2.5, 2.5, 2.5)
 
   scene.add(chest)
+}, undefined, function (error) {
+  console.error(error)
+})
+
+loader.load('/coral.glb', function(gltf) {
+  const coral = gltf.scene
+  coral.position.set(-30, -2, -80)
+  coral.scale.set(3, 3, 3)
+  scene.add(coral)
+}, undefined, function (error) {
+  console.error(error)
+})
+
+loader.load('/submarine.glb', function(gltf){
+  const submarine = gltf.scene
+  submarine.position.set(-50, -2, -120)
+  submarine.rotation.y = THREE.MathUtils.degToRad(210)
+  submarine.scale.set(3, 3, 3)
+  scene.add(submarine)
+  
+}, undefined, function (error) {
+  console.error(error)
+})
+loader.load('/low_poly_shark.glb', function(gltf){
+  const model = gltf.scene
+  model.scale.set(3,3,3)
+
+  scene.add( model )
+  const [x, z] = Array(2).fill().map(() => THREE.MathUtils.randFloatSpread(500));
+  const y = Array(1).fill().map(() => THREE.MathUtils.randFloatSpread(100))
+  model.position.set(x, y, z)
+
+  let seconds = 0
+  let lastTurned = 0
+  let turnedForword = Math.random() < 0.5
+  
+
+  function timer() {
+    seconds += 1
+  }
+
+  if (!turnedForword) {
+    model.rotation.y += turnAround
+  }
+
+  console.log(model.position.y)
+
+  function animateFish() {
+    requestAnimationFrame(animateFish)
+    console.log(model.position.z)
+  
+
+    if (seconds - lastTurned === 15) {
+      model.rotation.y += turnAround
+      lastTurned = seconds
+      turnedForword = !turnedForword
+    }
+
+    if (turnedForword){
+      model.position.z += 0.05
+    } else {
+      model.position.z -= 0.05
+    }
+  }
+  animateFish()
+  let stop = setInterval(timer, 1000)
 }, undefined, function (error) {
   console.error(error)
 })
