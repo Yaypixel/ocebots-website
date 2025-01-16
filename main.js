@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { FirstPersonControls, GLTFLoader } from 'three/examples/jsm/Addons.js';
+import { degToRad } from 'three/src/math/MathUtils.js';
 import { time } from 'three/webgpu';
 
 
@@ -8,6 +9,8 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 
 const turnAround =  Math.PI / 2 + Math.PI / 2
 const turn90 = Math.PI/2
+
+const colide = 0.8
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -58,6 +61,40 @@ playerBB.setFromObject(player)
 
 scene.add(player)
 console.log(playerBB)
+
+const borderN = new THREE.Mesh(
+  new THREE.BoxGeometry(500, 500, 1),
+  new THREE.MeshStandardMaterial({visible: false})
+)
+
+let borderNBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
+borderNBB.setFromObject(borderN)
+
+const borderE = new THREE.Mesh(
+  new THREE.BoxGeometry(500, 500, 1),
+  new THREE.MeshStandardMaterial({visible: false})
+)
+
+let borderEBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
+borderEBB.setFromObject(borderE)
+
+const borderS = new THREE.Mesh(
+  new THREE.BoxGeometry(500, 500, 1),
+  new THREE.MeshStandardMaterial({visible: false})
+)
+
+let borderSBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
+borderSBB.setFromObject(borderS)
+
+const borderW = new THREE.Mesh(
+  new THREE.BoxGeometry(500, 500, 1),
+  new THREE.MeshStandardMaterial({visible: false})
+)
+
+let borderWBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
+borderWBB.setFromObject(borderW)
+
+scene.add(borderN, borderE, borderS, borderW)
 
 const aboutUs = new THREE.Mesh(
   new THREE.BoxGeometry(30, 15, 2),
@@ -126,6 +163,18 @@ function checkCollision() {
   }
   else if (playerBB.intersectsBox(codeBB) && hasIntersectedBefore) {
     window.location.replace('https://github.com/Ocebots')
+  }
+  else if (playerBB.intersectsBox(borderNBB) && hasIntersectedBefore) {
+    camera.position.z = -250 + colide
+  }
+  else if (playerBB.intersectsBox(borderEBB) && hasIntersectedBefore) {
+    camera.position.x = 250 - colide
+  }
+  else if (playerBB.intersectsBox(borderSBB) && hasIntersectedBefore) {
+    camera.position.z = 250 - colide
+  }
+  else if (playerBB.intersectsBox(borderWBB) && hasIntersectedBefore) {
+    camera.position.x = -250 + colide
   }
   else {
     hasIntersectedBefore = true
@@ -403,6 +452,13 @@ code.rotation.y = 4.6
 codeText.position.set(-48.9, 5, -50)
 codeText.rotation.y = -4.82
 
+borderN.position.set(0, 0, -250)
+borderE.rotation.y = THREE.MathUtils.degToRad(90)
+borderE.position.set(250, 0, 0)
+borderS.position.set(0, 0, 250)
+borderW.position.set(-250, 0, 0 )
+borderW.rotation.y = degToRad(90)
+
 camera.position.y = 3
 
 
@@ -418,6 +474,10 @@ function animate() {
   aboutBB.copy(aboutUs.geometry.boundingBox).applyMatrix4(aboutUs.matrixWorld)
   cadBB.copy(cad.geometry.boundingBox).applyMatrix4(cad.matrixWorld)
   codeBB.copy(code.geometry.boundingBox).applyMatrix4(code.matrixWorld)
+  borderNBB.copy(borderN.geometry.boundingBox).applyMatrix4(borderN.matrixWorld)
+  borderEBB.copy(borderE.geometry.boundingBox).applyMatrix4(borderE.matrixWorld)
+  borderSBB.copy(borderS.geometry.boundingBox).applyMatrix4(borderS.matrixWorld)
+  borderWBB.copy(borderW.geometry.boundingBox).applyMatrix4(borderW.matrixWorld)
 
   checkCollision()
 
