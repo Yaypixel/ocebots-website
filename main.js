@@ -30,6 +30,13 @@ function onWindowResize(){
 
 renderer.render(scene, camera)
 
+document.getElementById("enter").onclick = function () {
+  document.getElementById("select-box").style.display = 'none'
+}
+
+document.getElementById("nah").onclick = function () {
+  window.location.replace("Welcome/Welcome.html")
+}
 
 const pointLight = new THREE.PointLight(0xffffff)
 
@@ -60,7 +67,7 @@ let playerBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
 playerBB.setFromObject(player)
 
 scene.add(player)
-console.log(playerBB)
+
 
 const borderN = new THREE.Mesh(
   new THREE.BoxGeometry(500, 500, 1),
@@ -183,7 +190,7 @@ function checkCollision() {
 
 
 function getOut() {
-  window.location.replace('https://ocebots.com')
+  window.location.replace('Welcome/Welcome.html')
 }
 
 const loader = new GLTFLoader()
