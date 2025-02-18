@@ -130,6 +130,14 @@ const cad = new THREE.Mesh(
 let cadBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
 cadBB.setFromObject(cad)
 
+const donate = new THREE.Mesh(
+  new THREE.BoxGeometry(30, 15, 2),
+  new THREE.MeshStandardMaterial({color: 0xffffff})
+)
+
+let donateBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
+donateBB.setFromObject(donate)
+
 const code = new THREE.Mesh(
   new THREE.BoxGeometry(30,15,2),
   new THREE.MeshStandardMaterial({color: 0xffffff})
@@ -182,6 +190,9 @@ function checkCollision() {
   }
   else if (playerBB.intersectsBox(borderWBB) && hasIntersectedBefore) {
     camera.position.x = -250 + colide
+  }
+  else if (playerBB.intersectsBox(donateBB) && hasIntersectedBefore) {
+    window.location.href = 'Donate/Donate.html'
   }
   else {
     hasIntersectedBefore = true
@@ -423,7 +434,14 @@ const codeText = new THREE.Mesh(
   new THREE.MeshStandardMaterial({map: CodeTexture, side: THREE.DoubleSide, transparent: true})
 )
 
-scene.add(test, sand, ocebots, instructions, aboutUsText, aboutUs, cad, cadText, code, codeText)
+const donateTexture = new THREE.TextureLoader().load('/donate3d.png')
+
+const donateText = new THREE.Mesh(
+  new THREE.PlaneGeometry(30, 15),
+  new THREE.MeshStandardMaterial({map: donateTexture, side: THREE.DoubleSide, transparent: true})
+)
+
+scene.add(test, sand, ocebots, instructions, aboutUsText, aboutUs, cad, cadText, code, codeText, donate, donateText)
 
 
 test.rotation.z = 0.05
@@ -445,6 +463,11 @@ aboutUs.position.z = -50
 aboutUs.position.y = 5
 aboutUs.position.x = 50
 aboutUs.rotation.y = -4.6
+
+donate.position.set(40, 5, -90)
+donate.rotation.y = degToRad(-50)
+donateText.position.set(38.5, 5, -90)
+donateText.rotation.y = degToRad(-50)
 
 aboutUsText.position.z = -50
 aboutUsText.position.y = 5
@@ -469,7 +492,6 @@ borderW.rotation.y = degToRad(90)
 camera.position.y = 3
 
 
-
 function animate() {
   requestAnimationFrame(animate);
 
@@ -485,6 +507,7 @@ function animate() {
   borderEBB.copy(borderE.geometry.boundingBox).applyMatrix4(borderE.matrixWorld)
   borderSBB.copy(borderS.geometry.boundingBox).applyMatrix4(borderS.matrixWorld)
   borderWBB.copy(borderW.geometry.boundingBox).applyMatrix4(borderW.matrixWorld)
+  donateBB.copy(donate.geometry.boundingBox).applyMatrix4(donate.matrixWorld)
 
   checkCollision()
 
@@ -493,8 +516,6 @@ function animate() {
       
   renderer.render(scene, camera);
 }
-
-
 
 let gridHelperOn = true
 
