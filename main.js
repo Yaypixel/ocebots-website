@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { FirstPersonControls, GLTFLoader } from 'three/examples/jsm/Addons.js';
 import { degToRad } from 'three/src/math/MathUtils.js';
-import { time } from 'three/webgpu';
+import { oscTriangle, time } from 'three/webgpu';
 
 
 const scene = new THREE.Scene();
@@ -143,6 +143,14 @@ const code = new THREE.Mesh(
   new THREE.MeshStandardMaterial({color: 0xffffff})
 )
 
+const outreach = new THREE.Mesh(
+  new THREE.BoxGeometry(30, 15, 2),
+  new THREE.MeshStandardMaterial({color: 0xffffff})
+)
+
+let outreachBB = new THREE.Box3(new THREE.Vector3(), new THREE.Vector3())
+outreachBB.setFromObject(outreach)
+
 let codeBB = new THREE.Box3(new THREE.Vector3, new THREE.Vector3())
 codeBB.setFromObject(code)
 
@@ -193,6 +201,9 @@ function checkCollision() {
   }
   else if (playerBB.intersectsBox(donateBB) && hasIntersectedBefore) {
     window.location.href = 'Donate/Donate.html'
+  }
+  else if (playerBB.intersectsBox(outreachBB) && hasIntersectedBefore) {
+    window.location.href = "Outreach/Outreach.html"
   }
   else {
     hasIntersectedBefore = true
@@ -441,7 +452,8 @@ const donateText = new THREE.Mesh(
   new THREE.MeshStandardMaterial({map: donateTexture, side: THREE.DoubleSide, transparent: true})
 )
 
-scene.add(test, sand, ocebots, instructions, aboutUsText, aboutUs, cad, cadText, code, codeText, donate, donateText)
+
+scene.add(test, sand, ocebots, instructions, aboutUsText, aboutUs, cad, cadText, code, codeText, donate, donateText, outreach)
 
 
 test.rotation.z = 0.05
@@ -468,6 +480,9 @@ donate.position.set(40, 5, -90)
 donate.rotation.y = degToRad(-50)
 donateText.position.set(38.5, 5, -90)
 donateText.rotation.y = degToRad(-50)
+
+outreach.position.set(-40, 5, -90)
+outreach.rotation.y = degToRad(50)
 
 aboutUsText.position.z = -50
 aboutUsText.position.y = 5
@@ -508,6 +523,7 @@ function animate() {
   borderSBB.copy(borderS.geometry.boundingBox).applyMatrix4(borderS.matrixWorld)
   borderWBB.copy(borderW.geometry.boundingBox).applyMatrix4(borderW.matrixWorld)
   donateBB.copy(donate.geometry.boundingBox).applyMatrix4(donate.matrixWorld)
+  outreachBB.copy(outreach.geometry.boundingBox).applyMatrix4(outreach.matrixWorld)
 
   checkCollision()
 

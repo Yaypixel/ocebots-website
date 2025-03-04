@@ -12,7 +12,7 @@ h1 {
     vertical-align: middle;
     line-height: 100px;
 }
-.text {
+#text {
     line-height: 1.8;
     border: none;
     text-align: center;
@@ -39,12 +39,6 @@ h1 {
     padding: 0px;
     margin: 0px;
     overflow: hidden;
-}
-#jamie {
-    display: block;
-    width: 600;
-    height: 400;
-    margin: auto;
 }
 .navbar a{
     color: white;
