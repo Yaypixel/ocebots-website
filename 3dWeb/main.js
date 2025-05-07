@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { FirstPersonControls, GLTFLoader } from 'three/examples/jsm/Addons.js';
+import { FirstPersonControls, GLTFLoader, DRACOLoader } from 'three/examples/jsm/Addons.js';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { oscTriangle, time } from 'three/webgpu';
 
@@ -209,6 +209,10 @@ function getOut() {
 }
 
 const loader = new GLTFLoader()
+const dLoader = new DRACOLoader()
+dLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/')
+dLoader.setDecoderConfig({type: 'js'})
+loader.setDRACOLoader(dLoader)
 
 function addSeaweed() {
   loader.load( '/seaweed.glb', function ( gltf ) {
@@ -402,6 +406,30 @@ loader.load('/low_poly_shark.glb', function(gltf){
   console.error(error)
 })
 
+loader.load('/robot-v1.glb', function (gltf) {
+  const geo = gltf.scene;
+
+  geo.traverse(function (child) {
+    if (child.isMesh && child.material) {
+      const materials = Array.isArray(child.material) ? child.material : [child.material];
+      materials.forEach((material) => {
+        if (material.metalness !== undefined) {
+          material.metalness = 0; 
+        }
+      });
+    }
+  });
+
+
+  geo.scale.set(15, 15, 15);
+  geo.position.set(0, -1.5, -50);
+
+  scene.add(geo);
+}, 
+undefined, 
+function (error) {
+  console.error('Error loading model:', error);
+});
 
 const OcebotsTexture = new THREE.TextureLoader().load('/ocebot.png')
 
